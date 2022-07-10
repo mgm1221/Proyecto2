@@ -1,12 +1,12 @@
 #ifndef MAP_SV_
 #define MAP_SV_
 
-#include "ADTMap.h"
+#include "AdtMap.h"
 #include <vector>
 
 using namespace std;
 
-class MapSV : public ADTMap{
+class MapSV : public AdtMap{
 public:
   MapSV(){};
   void insert(const string& key, int value);
