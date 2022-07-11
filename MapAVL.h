@@ -21,8 +21,8 @@ class MapAVL: public ADTMap{
         int size();
         bool empty();
         int hash(const string &);
-        void leftRotation(Node*);
-        void rightRotartion(Node*);
+        Node leftRotation(Node*);
+        Node rightRotation(Node*);
     private:
         Node* root;
         int s;

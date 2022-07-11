@@ -3,7 +3,14 @@
 using namespace std;
 
 void MapAVL::insert(const string &key, int value){
+    //creating new node with initial values
     Node* newNode = new Node();
+    newNode->key = key;
+    newNode->value = value;
+    newNode->parent = NULL;
+    newNode->right = NULL;
+    newNode->left = NULL;
+
 
     if(root == NULL){
 
@@ -13,8 +20,10 @@ void MapAVL::insert(const string &key, int value){
         Node* helper = root;
         while(1){
             if(hash(key)>hash(helper->key)){
+
                 if(helper->right == NULL){
                     helper->right = newNode;
+                    newNode->parent = helper;
                     break;
                 }else{
                     helper = helper->right;                
@@ -23,6 +32,7 @@ void MapAVL::insert(const string &key, int value){
                 if(hash(key)<hash(helper->key)){
                     if(helper->left == NULL){
                         helper->left = newNode;
+                        newNode->parent = helper;
                         break;
                     }else{
                         helper = helper->left;
@@ -40,6 +50,7 @@ void MapAVL::insert(const string &key, int value){
 
 }
 void MapAVL::erase(const string &key){
+
 
 }
 int MapAVL::at(const string &key){
@@ -84,4 +95,22 @@ int MapAVL::hash(const string &key){
 
     }
     return hashValue;
+}
+Node* MapAVL::rightRotation(Node* r){
+
+    Node* toReturn = r->left;
+    Node* rightchild = toReturn->right;
+    toReturn->right = r;
+    root->left = rightchild;
+
+    return toReturn
+}
+Node* MapAVL::leftRotation(Node* r){
+    
+    Node* toReturn = r->right;
+    Node* leftchild = toReturn->left;
+    toReturn->left = r;
+    r->left = leftchild;
+
+    return toReturn;
 }
