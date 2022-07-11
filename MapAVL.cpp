@@ -3,7 +3,39 @@
 using namespace std;
 
 void MapAVL::insert(const string &key, int value){
+    Node* newNode = new Node();
 
+    if(root == NULL){
+
+        root = newNode;
+    
+    }else{
+        Node* helper = root;
+        while(1){
+            if(hash(key)>hash(helper->key)){
+                if(helper->right == NULL){
+                    helper->right = newNode;
+                    break;
+                }else{
+                    helper = helper->right;                
+                }
+            }else{
+                if(hash(key)<hash(helper->key)){
+                    if(helper->left == NULL){
+                        helper->left = newNode;
+                        break;
+                    }else{
+                        helper = helper->left;
+                    }
+                }else{
+                    break;
+                }
+
+            }
+
+        }
+
+    }
     
 
 }
