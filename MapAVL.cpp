@@ -48,6 +48,7 @@ void MapAVL::insert(const string &key, int value){
     if(newNode != root){
 
         updateHeight(newNode->parent);
+        checkbalance(newNode->parent);
 
     }
     s++;
@@ -146,6 +147,7 @@ void MapAVL::updateHeight(Node* n){
 }
 void MapAVL::checkbalance(Node* n){
     int rigthHeight, leftHeight;
+    //
     if(n->left == NULL){
         leftHeight = -1;
     }else{
@@ -156,7 +158,9 @@ void MapAVL::checkbalance(Node* n){
     }else{
         rigthHeight = n->right->height;
     }
+
     n->balance = leftHeight - rigthHeight;
+
     if(n->balance<1){
         //el arbol es mas pesado hacia la izquierda por lo que hay que hacer una rotacion a la derecha
         
@@ -174,4 +178,5 @@ void MapAVL::checkbalance(Node* n){
         leftRotation(n);
     }
 
+    checkbalance(n->parent);
 }
