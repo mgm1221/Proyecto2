@@ -63,6 +63,7 @@ void MapAVL::erase(const string &key){
     Node* helper = root;
     bool erase;
     while(root != NULL ||helper->key != key){
+        //buscamos si la key esta en el AVL
         if(hashValue> hash(helper->key)){
 
             helper = helper->right;
@@ -75,7 +76,49 @@ void MapAVL::erase(const string &key){
         }
     }
     if(erase){
-        
+        Node* parent = helper->parent;
+        bool left;
+        if(parent->left == helper){
+            left = true;
+        }
+
+        if(helper->right != NULL && helper->left!= NULL){
+            //los dos hijos son distintos de NULL
+        }else{
+            if(helper->right != NULL){
+                //el hijo derecho es distinto de NULL
+                Node* replacement = helper->right;
+                free(helper);
+                if(left){
+                    parent->left = replacement;
+                }else{
+                    parent->right = replacement;
+                }
+                
+            }else{
+
+                if(helper->left!= NULL){
+                    Node* replacement = helper->left;
+                    free(helper);
+                    if(left){
+                        parent->left = replacement;
+                    }else{
+                        parent->right = replacement;
+                    }
+
+                }else{
+                    //los dos hijos son NULL
+                    if(left){
+                        parent->left = NULL;
+                    }else{
+                        parent->right = NULL;
+                    }
+
+                }
+
+            }
+            
+        }
     }
 
 }
@@ -225,11 +268,14 @@ void MapAVL::checkbalance(Node* n){
     //ya que los nodos sin hijos tienen altura 0
 
     if(n->left == NULL){
+
         leftHeight = -1;
+
     }else{
         leftHeight = n->left->height;
     }
     if(n->right == NULL){
+
         rigthHeight = -1;
     }else{
         rigthHeight = n->right->height;
