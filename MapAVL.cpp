@@ -21,18 +21,22 @@ void MapAVL::insert(const string &key, int value){
 
             if(hash(key)>hash(helper->key)){
                 if(helper->right == NULL){
+
                     helper->right = newNode;
                     newNode->parent = helper;
                     break;
+
                 }else{
                     helper = helper->right;                
                 }
             }else{
                 if(hash(key)<hash(helper->key)){
                     if(helper->left == NULL){
+                        
                         helper->left = newNode;
                         newNode->parent = helper;
                         break;
+
                     }else{
                         helper = helper->left;
                     }
@@ -97,24 +101,75 @@ int MapAVL::hash(const string &key){
     for(int i =0; i<key.length(); i++){
 
         hashValue = hashValue+ (int)key[i]*33*(i+1);
-        cout<< hashValue<< endl;
+
     }
     return hashValue;
 }
 void MapAVL::rightRotation(Node* r){
+    Node* parent;
+    bool left = false;
+    if(r != root){
+        
+        parent = r->parent;
+        if(r == parent->left){
+            left == true;
+        }
 
-    Node* toReturn = r->left;
-    Node* rightchild = toReturn->right;
-    toReturn->right = r;
-    root->left = rightchild;
+    }
+    Node* son = r->left;
+    Node* sonSRight = son->right;
+    son->right = r;
+    
+    r->parent = son;
+    r->left = sonSRight;
+
+    if(r != root){
+
+        if(left){
+            parent->left = son;
+        }else{
+            parent->right = son;
+        }
+
+    }else{
+        son->parent = NULL;
+        root = son;
+    }
 
 }
 void MapAVL::leftRotation(Node* r){
-    
-    Node* toReturn = r->right;
-    Node* leftchild = toReturn->left;
-    toReturn->left = r;
-    r->left = leftchild;
+    //ocupamos parent por si no estamos en la raiz para volver a asignar el nodo
+    //en la posicion que corresponde
+    Node* parent = NULL;
+    //este booleano nos dice si estamos a la izquierda del parent
+    bool left = false;
+    if(r!= root){
+
+        parent = r->parent;
+        if(r == parent->left){
+            left == true;
+        }
+    }
+    //reasignamos los nodos en el orden que corresponde
+    Node* son = r->right;
+    Node* sonSLeft= son->left;
+    son->left = r;
+
+    r->parent = son;
+    r->right = sonSLeft;
+
+    if(r != root){
+
+        if(left){
+            parent->left = son;
+        }else{
+            parent->right = son;
+        }
+
+    }else{
+        son->parent = NULL;
+        root = son;
+    }
 
 }
 void MapAVL::updateHeight(Node* n){
@@ -147,7 +202,11 @@ void MapAVL::updateHeight(Node* n){
 }
 void MapAVL::checkbalance(Node* n){
     int rigthHeight, leftHeight;
-    //
+
+    //calculamos el balance
+    //en caso de que uno de los nodos sea nulo se considera con altura menos 1
+    //ya que los nodos sin hijos tienen altura 0
+
     if(n->left == NULL){
         leftHeight = -1;
     }else{
@@ -158,25 +217,37 @@ void MapAVL::checkbalance(Node* n){
     }else{
         rigthHeight = n->right->height;
     }
-
+    //asignamos el balance a cada nodo
     n->balance = leftHeight - rigthHeight;
 
-    if(n->balance<1){
-        //el arbol es mas pesado hacia la izquierda por lo que hay que hacer una rotacion a la derecha
+    if(n->balance>1 ||n->balance<-1){
+
+        if(n->balance>1){
+            //el arbol es mas pesado hacia la izquierda por lo que hay que hacer una rotacion a la derecha
+            
+            //si el subarbol es mas pesado hacia la derecha rotamos el subarbol hacia la izquierda
+            if(n->left->balance<0){
+                leftRotation(n->left);
+            }
+            rightRotation(n);
+        }
+        if(n->balance<-1){
+            //el arbol es mas pesado hacia al derecha por lo que hay que rotar hacia la izquierda
+            
+            //si el subarbol es mas pesado hacia la izquierda rotamos el subarbol
+            if(n->right->balance>0){
+
+                rightRotation(n->right);
+            
+            }
+            leftRotation(n);
+        }
+
+    }else{
+        if(n->parent !=NULL){
+            checkbalance(n->parent);
+        }
         
-        //si el subarbol es mas pesado hacia la derecha rotamos el subarbol hacia la izquierda
-        if(n->left->balance<0){
-            leftRotation(n->left);
-        }
-        rightRotation(n);
-    }
-    if(n->balance>1){
-        //el arbol es mas pesado hacia al derecha por lo que hay que rotar hacia la izquierda
-        if(n->right->balance>0){
-            rightRotation(n->right);
-        }
-        leftRotation(n);
     }
 
-    checkbalance(n->parent);
 }

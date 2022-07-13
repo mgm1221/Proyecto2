@@ -7,8 +7,9 @@ int main(){
 
     MapAVL* mapavl = new MapAVL();
     mapavl->insert("a", 1);
-    mapavl->insert("b", 1);
     mapavl->insert("c", 1);
+    mapavl->insert("b", 1);
+    cout<< mapavl->size()<<endl;
 
     return 0;
 }
