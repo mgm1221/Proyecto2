@@ -145,7 +145,7 @@ void MapAVL::updateHeight(Node* n){
 
 }
 void MapAVL::checkbalance(Node* n){
-    int rigthHeight, leftHeight, balance;
+    int rigthHeight, leftHeight;
     if(n->left == NULL){
         leftHeight = -1;
     }else{
@@ -156,14 +156,22 @@ void MapAVL::checkbalance(Node* n){
     }else{
         rigthHeight = n->right->height;
     }
-    balance = leftHeight - rigthHeight;
-    if(balance<1){
+    n->balance = leftHeight - rigthHeight;
+    if(n->balance<1){
         //el arbol es mas pesado hacia la izquierda por lo que hay que hacer una rotacion a la derecha
-
+        
+        //si el subarbol es mas pesado hacia la derecha rotamos el subarbol hacia la izquierda
+        if(n->left->balance<0){
+            leftRotation(n->left);
+        }
+        rightRotation(n);
     }
-    if(balance>1){
+    if(n->balance>1){
         //el arbol es mas pesado hacia al derecha por lo que hay que rotar hacia la izquierda
-
+        if(n->right->balance>0){
+            rightRotation(n->right);
+        }
+        leftRotation(n);
     }
 
 }

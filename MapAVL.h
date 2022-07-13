@@ -12,6 +12,7 @@ class MapAVL: public ADTMap{
         Node* left;
         Node* right;
         int height;
+        int balance;
     };
     public:
 
