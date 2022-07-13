@@ -59,7 +59,24 @@ void MapAVL::insert(const string &key, int value){
 
 }
 void MapAVL::erase(const string &key){
+    int hashValue = hash(key);
+    Node* helper = root;
+    bool erase;
+    while(root != NULL ||helper->key != key){
+        if(hashValue> hash(helper->key)){
 
+            helper = helper->right;
+
+        }else{
+            helper = helper->left;
+        }
+        if(helper-> key == key){
+            erase = true;
+        }
+    }
+    if(erase){
+        
+    }
 
 }
 int MapAVL::at(const string &key){
