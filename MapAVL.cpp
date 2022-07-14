@@ -95,7 +95,7 @@ void MapAVL::erase(const string &key){
                 string newKey = succesor->key;
                 int newValue = succesor->value;
 
-                erase(succesor);
+                this->erase(succesor->key);
                 helper->key = newKey;
                 helper->value = newValue; 
 
