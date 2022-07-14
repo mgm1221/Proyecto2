@@ -133,6 +133,8 @@ void MapAVL::erase(const string &key){
             }
             
         }
+        updateHeight(helper->parent);
+        checkbalance(helper->parent);
     }
 
 }
