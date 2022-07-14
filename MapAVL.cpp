@@ -76,65 +76,71 @@ void MapAVL::erase(const string &key){
         }
     }
     if(erase){
-        Node* parent = helper->parent;
-        bool left;
-        if(parent->left == helper){
-            left = true;
-        }
-
-        if(helper->right != NULL && helper->left!= NULL){
-            //los dos hijos son distintos de NULL
-            Node* succesor = helper->right;
-
-            while(succesor->left != NULL){
-
-                succesor = succesor->left;
-            
+        if(helper != root){
+            Node* parent = helper->parent;
+            bool left;
+            if(parent->left == helper){
+                left = true;
             }
-            string newKey = succesor->key;
-            int newValue = succesor->value;
 
-            erase(succesor);
-            helper->key = newKey;
-            helper->value = newValue; 
+            if(helper->right != NULL && helper->left!= NULL){
+                //los dos hijos son distintos de NULL
+                Node* succesor = helper->right;
 
-        }else{
-            if(helper->right != NULL){
-                //el hijo derecho es distinto de NULL
-                Node* replacement = helper->right;
-                free(helper);
-                if(left){
-                    parent->left = replacement;
-                }else{
-                    parent->right = replacement;
-                }
+                while(succesor->left != NULL){
+
+                    succesor = succesor->left;
                 
-            }else{
+                }
+                string newKey = succesor->key;
+                int newValue = succesor->value;
 
-                if(helper->left!= NULL){
-                    Node* replacement = helper->left;
+                erase(succesor);
+                helper->key = newKey;
+                helper->value = newValue; 
+
+            }else{
+                if(helper->right != NULL){
+                    //el hijo derecho es distinto de NULL
+                    Node* replacement = helper->right;
                     free(helper);
                     if(left){
                         parent->left = replacement;
                     }else{
                         parent->right = replacement;
                     }
-
+                    
                 }else{
-                    //los dos hijos son NULL
-                    if(left){
-                        parent->left = NULL;
+
+                    if(helper->left!= NULL){
+                        Node* replacement = helper->left;
+                        free(helper);
+                        if(left){
+                            parent->left = replacement;
+                        }else{
+                            parent->right = replacement;
+                        }
+
                     }else{
-                        parent->right = NULL;
+                        //los dos hijos son NULL
+                        if(left){
+                            parent->left = NULL;
+                        }else{
+                            parent->right = NULL;
+                        }
+
                     }
 
                 }
-
+                
             }
-            
+            updateHeight(helper->parent);
+            checkbalance(helper->parent);
+        }else{
+            free(root);
+            root = NULL;
         }
-        updateHeight(helper->parent);
-        checkbalance(helper->parent);
+    
     }
 
 }
