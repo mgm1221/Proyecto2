@@ -84,6 +84,20 @@ void MapAVL::erase(const string &key){
 
         if(helper->right != NULL && helper->left!= NULL){
             //los dos hijos son distintos de NULL
+            Node* succesor = helper->right;
+
+            while(succesor->left != NULL){
+
+                succesor = succesor->left;
+            
+            }
+            string newKey = succesor->key;
+            int newValue = succesor->value;
+
+            erase(succesor);
+            helper->key = newKey;
+            helper->value = newValue; 
+
         }else{
             if(helper->right != NULL){
                 //el hijo derecho es distinto de NULL
