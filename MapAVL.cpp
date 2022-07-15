@@ -4,6 +4,8 @@ using namespace std;
 
 void MapAVL::insert(const string &key, int value){
     //creating new node with initial values
+    bool newInsertion;
+    bool finishedInsertion;
     Node* newNode = new Node();
     newNode->key = key;
     newNode->value = value;
@@ -17,45 +19,48 @@ void MapAVL::insert(const string &key, int value){
     
     }else{
         Node* helper = root;
-        while(1){
+        while(helper != NULL && !finishedInsertion){
 
-            if(hash(key)>hash(helper->key)){
+            if(hash(key)== hash(helper->key)){
+
+                helper->value = value;
+                finishedInsertion = true;
+
+            }else if(hash(key)>hash(helper->key)){
+
                 if(helper->right == NULL){
 
                     helper->right = newNode;
                     newNode->parent = helper;
-                    break;
+                    newInsertion = true;
+                    finishedInsertion = true;
 
                 }else{
                     helper = helper->right;                
                 }
             }else{
-                if(hash(key)<hash(helper->key)){
-                    if(helper->left == NULL){
-                        
-                        helper->left = newNode;
-                        newNode->parent = helper;
-                        break;
-
-                    }else{
-                        helper = helper->left;
-                    }
-                }else{
+                if(helper->left == NULL){
+                    
+                    helper->left = newNode;
+                    newNode->parent = helper;
+                    newInsertion = true;
+                    finishedInsertion = true;
                     break;
+
+                }else{
+                    helper = helper->left;
                 }
-
             }
-
         }
 
     }
-    if(newNode != root){
+    if(newNode != root && newInsertion){
 
         updateHeight(newNode->parent);
         checkbalance(newNode->parent);
+        s++;
 
     }
-    s++;
 
 }
 void MapAVL::erase(const string &key){
