@@ -62,7 +62,7 @@ void MapAVL::erase(const string &key){
     int hashValue = hash(key);
     Node* helper = root;
     bool erase;
-    while(root != NULL ||helper->key != key){
+    while(helper->key != key){
         //buscamos si la key esta en el AVL
         if(hashValue> hash(helper->key)){
 
@@ -71,7 +71,7 @@ void MapAVL::erase(const string &key){
         }else{
             helper = helper->left;
         }
-        if(helper-> key == key){
+        if(helper->key == key){
             erase = true;
         }
     }
@@ -134,8 +134,8 @@ void MapAVL::erase(const string &key){
                 }
                 
             }
-            updateHeight(helper->parent);
-            checkbalance(helper->parent);
+            updateHeight(parent);
+            checkbalance(parent);
         }else{
             free(root);
             root = NULL;
@@ -188,36 +188,37 @@ int MapAVL::hash(const string &key){
     return hashValue;
 }
 void MapAVL::rightRotation(Node* r){
-    Node* parent;
+    Node* parent = NULL;
     bool left = false;
     if(r != root){
         
         parent = r->parent;
+
         if(r == parent->left){
-            left == true;
+            left = true;
         }
 
     }
     Node* son = r->left;
     Node* sonSRight = son->right;
+
     son->right = r;
-    
     r->parent = son;
     r->left = sonSRight;
 
     if(r != root){
-
         if(left){
             parent->left = son;
+            son->parent = parent;
         }else{
             parent->right = son;
+            son->parent = parent;
         }
-
     }else{
-        son->parent = NULL;
         root = son;
+        son->parent = NULL;
     }
-
+    
 }
 void MapAVL::leftRotation(Node* r){
     //ocupamos parent por si no estamos en la raiz para volver a asignar el nodo
@@ -228,15 +229,16 @@ void MapAVL::leftRotation(Node* r){
     if(r!= root){
 
         parent = r->parent;
+
         if(r == parent->left){
-            left == true;
+            left = true;
         }
     }
     //reasignamos los nodos en el orden que corresponde
     Node* son = r->right;
     Node* sonSLeft= son->left;
+    
     son->left = r;
-
     r->parent = son;
     r->right = sonSLeft;
 
@@ -244,8 +246,10 @@ void MapAVL::leftRotation(Node* r){
 
         if(left){
             parent->left = son;
+            son->parent = parent;
         }else{
             parent->right = son;
+            son->parent = parent;
         }
 
     }else{
@@ -267,7 +271,7 @@ void MapAVL::updateHeight(Node* n){
 
         }
 
-    }else{
+    }else if(n->left != NULL|| n->right != NULL){
 
         if(n->left == NULL){
 
@@ -276,9 +280,13 @@ void MapAVL::updateHeight(Node* n){
         }else{
             n->height = n->left->height +1;
         }
+    }else{
+        n->height = 0;
     }
     if(n->parent!=NULL){
+
         updateHeight(n->parent);
+    
     }
 
 }
@@ -312,8 +320,11 @@ void MapAVL::checkbalance(Node* n){
             
             //si el subarbol es mas pesado hacia la derecha rotamos el subarbol hacia la izquierda
             if(n->left->balance<0){
+
                 leftRotation(n->left);
+            
             }
+
             rightRotation(n);
         }
         if(n->balance<-1){
@@ -335,4 +346,18 @@ void MapAVL::checkbalance(Node* n){
         
     }
 
+}
+void MapAVL::help(){
+    cout<<"root key "<< root->key<< endl;
+
+    this->indegree(root);
+}
+void MapAVL::indegree(Node* n){
+    if(n->left!= NULL){
+        indegree(n->left);
+    }
+    cout<< n->key<< endl;
+    if(n->right!= NULL){
+        indegree(n->right);
+    }
 }

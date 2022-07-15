@@ -26,6 +26,8 @@ class MapAVL: public ADTMap{
         void rightRotation(Node*);
         void updateHeight(Node*);
         void checkbalance(Node*);
+        void indegree(Node*);
+        void help();
     private:
         Node* root;
         int s;
