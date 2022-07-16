@@ -3,62 +3,70 @@
 using namespace std;
 
 void MapAVL::insert(const string &key, int value){
-    //creating new node with initial values
-    bool newInsertion;
-    bool finishedInsertion;
-    Node* newNode = new Node();
-    newNode->key = key;
-    newNode->value = value;
-    newNode->parent = NULL;
-    newNode->right = NULL;
-    newNode->left = NULL;
-    newNode->height = 0;
+    //creacion de nodo basico
+    Node* n = new Node();
+    n->key = key;
+    n->value = value;
+    n->parent = NULL;
+    n->left = NULL;
+    n->right = NULL;
+    n->height = 0;
+
+    //vemos si la raiz es nula
     if(root == NULL){
+        root = n;
 
-        root = newNode;
-    
     }else{
+        int hashValue = hash(key);
         Node* helper = root;
-        while(helper != NULL && !finishedInsertion){
+        bool inserted = false;
+        bool newInsertion = false;
 
-            if(hash(key)== hash(helper->key)){
+        while(!inserted){
 
+            if(hashValue == hash(helper->key)){
                 helper->value = value;
-                finishedInsertion = true;
+                inserted = true;
 
-            }else if(hash(key)>hash(helper->key)){
+            }else if(hashValue > hash(helper->key)){
 
                 if(helper->right == NULL){
 
-                    helper->right = newNode;
-                    newNode->parent = helper;
+                    helper->right = n;
+                    n->parent = helper;
+                    inserted = true;
                     newInsertion = true;
-                    finishedInsertion = true;
 
                 }else{
-                    helper = helper->right;                
+                    helper = helper->right;
                 }
-            }else{
-                if(helper->left == NULL){
-                    
-                    helper->left = newNode;
-                    newNode->parent = helper;
-                    newInsertion = true;
-                    finishedInsertion = true;
-                    break;
 
+            }else{
+
+                if(helper->left == NULL){
+                    helper->left = n;
+                    n->parent = helper;
+                    inserted = true;
+                    newInsertion = true;
                 }else{
                     helper = helper->left;
                 }
+
             }
+
         }
+        if(newInsertion){
 
-    }
-    if(newNode != root && newInsertion){
+            s++;
 
-        updateHeight(newNode->parent);
-        checkbalance(newNode->parent);
-        s++;
+            if(n!= root){
+                cout<< "check"<< endl;
+                updateHeight(n->parent);
+                checkbalance(n->parent);
+            
+            }
+
+        }
 
     }
 
@@ -192,102 +200,135 @@ int MapAVL::hash(const string &key){
     }
     return hashValue;
 }
-void MapAVL::rightRotation(Node* r){
-    Node* parent = NULL;
-    bool left = false;
-    if(r != root){
+void MapAVL::rightRotation(Node* n){
+    Node* ancestor = NULL;
+    bool isLeft = false;
+    bool isRoot = true;
+    cout<<endl<<"Right rotation"<< endl;
+    if(n != root){
+
+        ancestor = n->parent;
+        isRoot = false;
+
+        if(ancestor->left == n){
+
+            isLeft = true;
         
-        parent = r->parent;
-
-        if(r == parent->left){
-            left = true;
         }
-
     }
-    Node* son = r->left;
-    Node* sonSRight = son->right;
+    Node* nSon = n->left;
+    Node* x = nSon->right;
 
-    son->right = r;
-    r->parent = son;
-    r->left = sonSRight;
-
-    if(r != root){
-        if(left){
-            parent->left = son;
-            son->parent = parent;
-        }else{
-            parent->right = son;
-            son->parent = parent;
-        }
+    cout<< "n es : "<< n->key<< endl;
+    cout<< "nSon es: "<< nSon->key<< endl;
+    if(x!= NULL){
+        cout<< "x es: " << x->key;
     }else{
-        root = son;
-        son->parent = NULL;
+        cout<< "x es NULL"<< endl;
+    }
+    //basic movement
+    nSon->right = n;
+    n->parent = nSon;
+    n->left = x;
+
+    if(x != NULL){
+        cout<< "isRoot"<< endl;
+        nSon->parent = NULL;
+        x->parent = n;
+    }
+    if(isRoot){
+
+        root = nSon;
+    
+    }else{
+        nSon->parent = ancestor;
+        if(isLeft){
+
+            ancestor->left = nSon;
+
+        }else{
+            ancestor->right = nSon;
+        }
+
     }
     
 }
-void MapAVL::leftRotation(Node* r){
+void MapAVL::leftRotation(Node* n){
     //ocupamos parent por si no estamos en la raiz para volver a asignar el nodo
     //en la posicion que corresponde
-    Node* parent = NULL;
+    Node* ancestor = NULL;
     //este booleano nos dice si estamos a la izquierda del parent
-    bool left = false;
-    if(r!= root){
+    bool isLeft = false;
+    bool isRoot = true;
+    cout<< "left rotation"<< endl;
+    if(n != root){
 
-        parent = r->parent;
+        ancestor = n->parent;
+        isRoot = false;
 
-        if(r == parent->left){
-            left = true;
+        if(ancestor->left == n){
+            isLeft = true;
         }
+
     }
-    //reasignamos los nodos en el orden que corresponde
-    Node* son = r->right;
-    Node* sonSLeft= son->left;
+    Node* nSon = n->right;
+    Node* x = nSon->left;
+    cout<< 1<< endl;
+    cout<< "n es : "<< n->key<< endl;
+    cout<< "nSon es: "<< nSon->key<< endl;
+    if(x!= NULL){
+        cout<< "x es: " << x->key;
+    }else{
+        cout<< "x es null"<< endl;
+    }
+    //basic movement
+    nSon->left = n;
+    n->parent = nSon;
+    n->right = x;
+    if(x != NULL){
+        x->parent = n;
+    }
+    if(isRoot){
+        cout<< "isRoot"<< endl;
+        nSon->parent = NULL;
+        root = nSon;
     
-    son->left = r;
-    r->parent = son;
-    r->right = sonSLeft;
+    }else{
+        nSon->parent = ancestor;
+        if(isLeft){
 
-    if(r != root){
+            ancestor->left = nSon;
 
-        if(left){
-            parent->left = son;
-            son->parent = parent;
         }else{
-            parent->right = son;
-            son->parent = parent;
+            ancestor->right = nSon;
         }
 
-    }else{
-        son->parent = NULL;
-        root = son;
     }
 
 }
 void MapAVL::updateHeight(Node* n){
-    if(n->left != NULL && n->right!=NULL){
+    if(n->left == NULL && n->right == NULL){
 
-        if(n->left->height>n->right->height){
-
-            n->height = 1+ n->left->height;
-
-        }else{
-
-            n->height = 1+ n->right->height;
-
-        }
-
-    }else if(n->left != NULL|| n->right != NULL){
-
-        if(n->left == NULL){
-
-            n->height = n->right->height +1;
-
-        }else{
-            n->height = n->left->height +1;
-        }
-    }else{
         n->height = 0;
+    
+    }else if(n->left != NULL && n->right == NULL){
+
+        n->height = n->left->height +1;
+    
+    }else if(n->right != NULL && n->left== NULL){
+
+        n->height = n->right->height +1;
     }
+    else{
+        if(n->left->height > n->right->height){
+            
+            n->height = n->left->height+1;
+
+        }else{
+            n->height = n->right->height +1;
+        }
+    }
+    
     if(n->parent!=NULL){
 
         updateHeight(n->parent);
@@ -297,60 +338,54 @@ void MapAVL::updateHeight(Node* n){
 }
 void MapAVL::checkbalance(Node* n){
     int rigthHeight, leftHeight;
-
+    bool rotation = false;
     //calculamos el balance
     //en caso de que uno de los nodos sea nulo se considera con altura menos 1
     //ya que los nodos sin hijos tienen altura 0
 
-    if(n->left == NULL){
+    if(n->right != NULL){
+        
+        rigthHeight = n->right->height;
+
+    }else{
+
+        rigthHeight = -1;
+    
+    }
+    if(n->left != NULL){
+
+        leftHeight = n->left->height;
+
+    }else{
 
         leftHeight = -1;
 
-    }else{
-        leftHeight = n->left->height;
     }
-    if(n->right == NULL){
+    n ->balance = leftHeight - rigthHeight;
+    cout<< n->key << n->balance<< endl;
+    if(n->balance>1){
+        cout<< "balance"<< endl;
+        if(n->left->balance<0){
 
-        rigthHeight = -1;
-    }else{
-        rigthHeight = n->right->height;
-    }
-    //asignamos el balance a cada nodo
-    n->balance = leftHeight - rigthHeight;
-
-    if(n->balance>1 ||n->balance<-1){
-
-        if(n->balance>1){
-            //el arbol es mas pesado hacia la izquierda por lo que hay que hacer una rotacion a la derecha
-            
-            //si el subarbol es mas pesado hacia la derecha rotamos el subarbol hacia la izquierda
-            if(n->left->balance<0){
-
-                leftRotation(n->left);
-            
-            }
-
-            rightRotation(n);
-        }
-        if(n->balance<-1){
-            //el arbol es mas pesado hacia al derecha por lo que hay que rotar hacia la izquierda
-            
-            //si el subarbol es mas pesado hacia la izquierda rotamos el subarbol
-            if(n->right->balance>0){
-
-                rightRotation(n->right);
-            
-            }
-            leftRotation(n);
-        }
-
-    }else{
-        if(n->parent !=NULL){
-            checkbalance(n->parent);
-        }
+            leftRotation(n->left);
         
+        }
+        rightRotation(n);
+        rotation = true;
     }
+    if(n->balance<-1){
 
+        if(n->right->balance>0){
+
+            rightRotation(n->right);
+        
+        }
+        leftRotation(n);
+        rotation = true;
+    }
+    if(n->parent != NULL && !rotation){
+        checkbalance(n->parent);
+    }
 }
 void MapAVL::help(){
     cout<<"root key "<< root->key<< endl;
@@ -362,6 +397,7 @@ void MapAVL::indegree(Node* n){
         indegree(n->left);
     }
     cout<< n->key<< endl;
+    cout<< "height: " << n->height<<endl;
     if(n->right!= NULL){
         indegree(n->right);
     }
