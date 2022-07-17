@@ -209,7 +209,7 @@ void MapAVL::rightRotation(Node* n){
 
         ancestor = n->parent;
         isRoot = false;
-
+        cout<< "ancestor: "<< ancestor->key<< endl;
         if(ancestor->left == n){
 
             isLeft = true;
@@ -219,25 +219,15 @@ void MapAVL::rightRotation(Node* n){
     Node* nSon = n->left;
     Node* x = nSon->right;
 
-    cout<< "n es : "<< n->key<< endl;
-    cout<< "nSon es: "<< nSon->key<< endl;
-    if(x!= NULL){
-        cout<< "x es: " << x->key;
-    }else{
-        cout<< "x es NULL"<< endl;
-    }
-    //basic movement
-    nSon->right = n;
-    n->parent = nSon;
     n->left = x;
-
-    if(x != NULL){
-        cout<< "isRoot"<< endl;
-        nSon->parent = NULL;
+    n->parent = nSon;
+    nSon->right = n;
+    if(x!=NULL){
         x->parent = n;
     }
     if(isRoot){
-
+        cout<< "isRoot"<< endl;
+        nSon->parent = NULL;
         root = nSon;
     
     }else{
@@ -251,6 +241,7 @@ void MapAVL::rightRotation(Node* n){
         }
 
     }
+    updateHeight(n);
     
 }
 void MapAVL::leftRotation(Node* n){
@@ -267,7 +258,9 @@ void MapAVL::leftRotation(Node* n){
         isRoot = false;
 
         if(ancestor->left == n){
+
             isLeft = true;
+        
         }
 
     }
@@ -304,6 +297,8 @@ void MapAVL::leftRotation(Node* n){
         }
 
     }
+    cout<< "ended rotation"<< endl;
+    updateHeight(n);
 
 }
 void MapAVL::updateHeight(Node* n){
