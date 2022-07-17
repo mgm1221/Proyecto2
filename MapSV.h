@@ -15,7 +15,6 @@ public:
   int at(const string& key);
   int size();
   bool empty();
-  void print();
 
 private:
   vector<pair<string, int>> v;

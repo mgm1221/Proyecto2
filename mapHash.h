@@ -23,7 +23,6 @@ public:
   int at(const string& str);
   int size();
   bool empty();
-  void display();
 
 private:
 

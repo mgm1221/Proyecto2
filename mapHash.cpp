@@ -82,20 +82,6 @@ bool mapGG::empty(){
   return true;
 }
 
-void mapGG::display() {
-   int i = 0;
-
-   for(i = 0; i<max_size; i++) {
-
-      if(arr[i] != NULL)
-         cout<<"("<<arr[i]->first<<" "<<arr[i]->second<<")";
-      else
-         printf(" ~~ ");
-   }
-
-   printf("\n");
-}
-
 int mapGG::hash(string key){
   size_t sum = 0;
   for(int i = 0; i < key.length(); i++) {
